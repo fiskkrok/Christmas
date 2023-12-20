@@ -1,0 +1,21 @@
+@inject IToastService ToastService
+
+<div class="@ToastClass">
+    <h3 class="@ToastClass">@Message.Title</h3>
+    <p class="@ToastClass">@Message.Content</p>
+</div>
+
+@code {
+    [Parameter] public ToastMessage? Message { get; set; }
+    [Parameter] public ToastType ToastType { get; set; }
+
+    private string ToastClass => ToastType switch
+    {
+        ToastType.Success => "text-white p-4 bg-success rounded",
+        ToastType.Warning => "text-white p-4 bg-warning rounded",
+        ToastType.Info => "text-white p-4 bg-info rounded",
+        ToastType.Error => "text-white p-4 bg-danger rounded",
+        _ => "text-white p-4 bg-primary rounded",
+    };
+
+}

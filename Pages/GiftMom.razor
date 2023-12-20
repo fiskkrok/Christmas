@@ -1,0 +1,89 @@
+@page "/giftmom"
+@inject IToastService ToastService
+<div>
+    <h1 class="header">Present Mamma <br> Första gåtan</h1>
+
+
+    <p>
+        I en liten ask, jag kommer över hav och land,<br>
+        finns något som ger dagen en extra glänsande kant.<br>
+        Inte stort som en puck, inte mjukt som en tröja,<br>
+        men i din morgonrutin, det kommer att höja.<br><br>
+
+        Från Sverige till Toronto, en gåva så liten,<br>
+        men ändå med kraft, att dina sinnen den ska smita.<br>
+        Gissningslek nu, broder kära, vad kan det vara?<br>
+        Något att njuta, i ditt kök, inte sällan, utan skara?.
+    </p>
+
+    <input class="input" type="text" @bind="userGuess" />
+    <button class="button" @onclick="CheckAnswer">Gissa</button>
+    @if (isLocked)
+    {
+        <p>Time until next Christmas: @timeUntilNextChristmas.Days days, @timeUntilNextChristmas.Hours hours,
+            @timeUntilNextChristmas.Minutes minutes, @timeUntilNextChristmas.Seconds seconds</p>
+    }
+</div>
+
+
+@code {
+    private string? userGuess;
+    private const string Tip = "två ord, första ordet börjar på H***o, andra ordet börjar på R*** | Sista Försöket";
+    private const string CorrectAnswer = "Hälso resa";
+
+    private int wrongGuessCount = 0;
+    private bool isLocked = false;
+    private TimeSpan timeUntilNextChristmas;
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        timeUntilNextChristmas = CalculateTimeUntilNextChristmas();
+    }
+
+    private TimeSpan CalculateTimeUntilNextChristmas()
+    {
+        DateTime nextChristmas = new DateTime(DateTime.Now.Year + 1, 12, 25);
+        return nextChristmas - DateTime.Now;
+    }
+
+    private async Task CheckAnswer()
+    {
+        if (isLocked)
+        {
+            return;
+        }
+        else
+        {
+
+            if (string.IsNullOrEmpty(userGuess))
+            {
+                ToastService.ShowError("Du måste skriva något!");
+            }
+            else
+            {
+                wrongGuessCount++;
+
+                if (userGuess.Equals(CorrectAnswer, StringComparison.OrdinalIgnoreCase))
+                {
+                    ToastService.ShowSuccess("Grattis! Du vann en frukost på valfrit ställe för hela familjen ( Wille bjuder )!");
+                    wrongGuessCount = 0;
+                }
+                else if (wrongGuessCount <= 1)
+                {
+                    ToastService.ShowWarning("Fel svar, försök igen!");
+                }
+                else if (wrongGuessCount <= 2)
+                {
+                    ToastService.ShowWarning(Tip);
+                }
+                else
+                {
+                    ToastService.ShowError("Tyvärr, Bättre lycka nästa gång.");
+                    isLocked = true;
+                    timeUntilNextChristmas = CalculateTimeUntilNextChristmas();
+                }
+
+            }
+        }
+    }
+}
