@@ -58,7 +58,6 @@
         {
             ShowToast(ToastType.Error, new ToastMessage { Title = "Fel svar!", Content = "Du har inga fler försök kvar! Bättre lycka nästa år" });
             isLocked = true;
-            ShowModal();
         }
         }
 
@@ -68,4 +67,5 @@
             .Add(nameof(MyToastComponent.Message), message)
             .Add(nameof(MyToastComponent.ToastType), type));
     }
+}
 }
