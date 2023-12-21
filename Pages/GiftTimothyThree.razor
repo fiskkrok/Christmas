@@ -3,25 +3,7 @@
 
 <div style="position: relative;">
      @if (isLocked)
-    {
-        <div class="modal fade show" tabindex="-1" aria-hidden="@showModal">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-body">
-                        <script>
-                            (function(d, s, id) {
-                                var js, pjs = d.getElementsByTagName(s)[0];
-                                if (d.getElementById(id)) return;
-                                js = d.createElement(s); js.id = id;
-                                js.src = "//www.tickcounter.com/static/js/loader.js";
-                                pjs.parentNode.insertBefore(js, pjs);
-                            }(document, "script", "tickcounter-sdk"));
-                        </script>
-                        <a data-type="countdown" data-id="4712985" class="tickcounter" style="display:block; left:0; width:100%; height:0; position:relative; padding-bottom:25%; margin:0 auto;" title="Tid till nästa julafton" href="//www.tickcounter.com/" onclick="event.preventDefault();" >Tid till nästa gissning</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+   
     }
     <h1 class="header">Present ett Timothy <br> Första gåtan</h1>
 
@@ -59,33 +41,26 @@
         }
         else if (userGuess.Equals(CorrectAnswer, StringComparison.OrdinalIgnoreCase))
         {
-            ShowToast(ToastType.Success, new ToastMessage { Title = "Grattis!", Content = "Du vann en frukost på valfrit ställe (Värde 20kr)" });
-        }
-        else
+                ShowToast(ToastType.Success, new ToastMessage { Title = "Grattis!", Content = "Du vann en frukost på valfrit ställe (Värde 20kr)" });
+            }
+            else
+            {
+        wrongGuessCount++; // Increment the count at the beginning of the else block
+        if (wrongGuessCount == 1)
         {
-            if (wrongGuessCount == 0)
-            {
-                ShowToast(ToastType.Warning, new ToastMessage { Title = "Fel svar!", Content = "Försök igen!" });
-                wrongGuessCount++;
-            }
-            else if (wrongGuessCount == 1)
-            {
-                ShowToast(ToastType.Warning, new ToastMessage { Title = "Fel svar!", Content = Tip });
-                wrongGuessCount++;
-            }
-            else if (wrongGuessCount == 2)
-            {
-                isLocked = true;
-                ShowModal();
-            }
+            ShowToast(ToastType.Info, new ToastMessage { Title = "Fel svar!", Content = "Försök igen!" });
         }
-
-    }
-        private void ShowModal()
-    {
-        showModal = true;
-        StateHasChanged();
-    }
+        else if (wrongGuessCount == 2)
+        {
+            ShowToast(ToastType.Info, new ToastMessage { Title = "Fel svar!", Content = Tip });
+        }
+        else if (wrongGuessCount == 3)
+        {
+            ShowToast(ToastType.Error, new ToastMessage { Title = "Fel svar!", Content = "Du har inga fler försök kvar! Bättre lycka nästa år" });
+            isLocked = true;
+            ShowModal();
+        }
+        }
 
     public void ShowToast(ToastType type, ToastMessage message)
     {
