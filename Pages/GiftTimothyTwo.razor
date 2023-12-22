@@ -1,34 +1,49 @@
-@page "/gifttimothythree"
+@page "/gifttimothytwo"
 @inject IToastService ToastService
 
+    
 <div style="position: relative;">
-     @if (isLocked)
-   
-    }
-    <h1 class="header">Present ett Timothy <br> Första gåtan</h1>
-
+    <h1 class="header">Present 2 Timothy <br> Andra gåtan</h1>
+<p class="line"></p>
     <p class="bread">
-        I ett litet paket, gömd i hemmets vrå, <br>
-        vilar en vän som vaknar när morgonen står på. <br>
-        Med ett tryck och ett sus, blir världen mer klar, <br>
-        en morgonritual, förvandlad till magi, var da. <br><br>
-
-        I sin metalliska dräkt, står den tyst och stolt, <br>
-        väntar på att uppfylla sitt givna löfte. <br>
-        Med en doft som sprider sig, varm och djupt omfamnande, <br>
-        ger den styrka till dagens alla möten och löften..
+        En gåva jag bär, över land och hav,<br>
+    med en essens så fin, som en tystnad kan ha.<br>
+    Inte bullrig som musik, ej hård som en sten,<br>
+    men dess närvaro märks, som en tyst, elegant scen.<br><br>
+    Från Sverige till Toronto, där vi nu ska fira,<br>
+    Gissa, min broder, vad kan detta vara?<br>
+    Något som förnims, nära som en sällskapsstjärna.<br>
+    Ej syns det för ögat, men dess effekt är klar,<br>
+    som en fläkt av vind, subtil men ändå sann.<br><br>
+    Dina fisar luktar lera, men med denna, kanske inte mera.
     </p>
 
     <input class="input" type="text" @bind="userGuess" />
-    <button class="button" @onclick="CheckAnswer">Gissa</button>
+    <button class="button" @onclick="CheckAnswer" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Gissa</button>
 
    
 </div>
-
+ @if (wrongGuessCount == 2)
+  {
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header fs-20">
+        <h1 class="modal-title fs-10" id="staticBackdropLabel">YOU LOSE</h1>
+      </div>
+      <div class="modal-body">
+        Tyvärr Timse, du har inga fler försök kvar! Bättre lycka nästa år!
+      </div>
+      
+    </div>
+  </div>
+</div>
+    }
 @code {
     private string? userGuess;
-    private const string Tip = "två ord, första ordet börjar på K****, andra ordet börjar på K******* | Sista Försöket";
-    private const string CorrectAnswer = "Kaffe kappslar";
+    private const string Tip = "Ett ord, 6 bokstäver";
+    private const string CorrectAnswer = "Parfym";
+    private int guessesLeft = 4;
 
     private int wrongGuessCount = 0;
     private bool isLocked = false;
@@ -48,24 +63,28 @@
         wrongGuessCount++; // Increment the count at the beginning of the else block
         if (wrongGuessCount == 1)
         {
-            ShowToast(ToastType.Info, new ToastMessage { Title = "Fel svar!", Content = "Försök igen!" });
+            guessesLeft--;
+            ShowToast(ToastType.Info, new ToastMessage { Title = $"Fel svar! Gisningar kvar- {guessesLeft}", Content = "Försök igen!" });
         }
         else if (wrongGuessCount == 2)
         {
-            ShowToast(ToastType.Info, new ToastMessage { Title = "Fel svar!", Content = Tip });
+            guessesLeft--;
+            ShowToast(ToastType.Info, new ToastMessage { Title = $"Fel svar! Gisningar kvar- {guessesLeft}", Content = Tip });
         }
         else if (wrongGuessCount == 3)
         {
-            ShowToast(ToastType.Error, new ToastMessage { Title = "Fel svar!", Content = "Du har inga fler försök kvar! Bättre lycka nästa år" });
+            guessesLeft--;
+            wrongGuessCount++;
+            ShowToast(ToastType.Error, new ToastMessage { Title = $"Fel svar! Gisningar kvar- {guessesLeft}", Content = "Försiktig nu!" });
             isLocked = true;
-            ShowModal();
         }
         }
 
-    public void ShowToast(ToastType type, ToastMessage message)
+     void ShowToast(ToastType type, ToastMessage message)
     {
         ToastService.ShowToast<MyToastComponent>(new ToastParameters()
             .Add(nameof(MyToastComponent.Message), message)
             .Add(nameof(MyToastComponent.ToastType), type));
     }
+}
 }
