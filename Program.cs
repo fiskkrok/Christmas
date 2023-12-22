@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-using Chistmas;
+using Christmas;
 using Blazored.Toast;
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
