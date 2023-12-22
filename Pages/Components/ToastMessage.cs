@@ -1,4 +1,4 @@
-namespace Christmas.Pages.Model;
+
 public class ToastMessage
 {
     public string Title { get; set; }

@@ -1,4 +1,3 @@
-namespace Christmas.Pages.Model;
 public enum ToastType
 {
     Info,
